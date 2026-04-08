@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import net.javapractice.banking_app.dto.AccountDto;
+import net.javapractice.banking_app.dto.TransferDataDto;
 import net.javapractice.banking_app.entity.Account;
 import net.javapractice.banking_app.mapper.AccountMapper;
 import net.javapractice.banking_app.repository.AccountRepository;
@@ -69,6 +71,25 @@ public class AccountServiceImpl implements AccountService {
     public void deleteAccount(Long id) {
         accountRepository.findById(id).orElseThrow(() -> new AccountException("Account does not exist."));
         accountRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void transferFunds(TransferDataDto transferDataDto) {
+        Account sender = accountRepository.findById(transferDataDto.senderId())
+                .orElseThrow(() -> new AccountException("Account does not exist."));
+        Account reciever = accountRepository.findById(transferDataDto.recieverId())
+                .orElseThrow(() -> new AccountException("Account does not exist."));
+
+        if (sender.getBalance() < transferDataDto.amount()) {
+            throw new MathException("Insufficient Balance.");
+        }
+
+        reciever.setBalance(reciever.getBalance() + transferDataDto.amount());
+        accountRepository.save(reciever);
+
+        sender.setBalance(sender.getBalance() - transferDataDto.amount());
+        accountRepository.save(sender);
     }
 
 }
