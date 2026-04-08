@@ -1,7 +1,19 @@
 package net.javapractice.banking_app.service;
 
+import java.util.List;
+
 import net.javapractice.banking_app.dto.AccountDto;
 
 public interface AccountService {
     AccountDto createAccount(AccountDto accountDto);
+
+    AccountDto getAccount(Long id);
+
+    AccountDto deposit(Long id, Double amount);
+
+    AccountDto withdraw(Long id, Double amount);
+
+    List<AccountDto> getAllAccounts();
+
+    void deleteAccount(Long id);
 }
