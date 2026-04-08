@@ -1,9 +1,11 @@
 package net.javapractice.banking_app.controller;
 
+import net.javapractice.banking_app.repository.TransactionRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.javapractice.banking_app.dto.AccountDto;
+import net.javapractice.banking_app.dto.TransactionDto;
 import net.javapractice.banking_app.dto.TransferDataDto;
 import net.javapractice.banking_app.service.AccountService;
 
@@ -25,7 +27,7 @@ public class AccountController {
 
     private AccountService accountService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, TransactionRepository transactionRepository) {
         this.accountService = accountService;
     }
 
@@ -65,4 +67,10 @@ public class AccountController {
         accountService.transferFunds(transferDataDto);
         return ResponseEntity.ok("Transfer successful!");
     }
+
+    @GetMapping("{id}/transactions")
+    public ResponseEntity<List<TransactionDto>> getTransactionsForAccount(@PathVariable Long id) {
+        return ResponseEntity.ok(accountService.getAllTransactionsForAccount(id));
+    }
+
 }

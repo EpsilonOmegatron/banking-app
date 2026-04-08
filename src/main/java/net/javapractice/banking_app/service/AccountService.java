@@ -3,6 +3,7 @@ package net.javapractice.banking_app.service;
 import java.util.List;
 
 import net.javapractice.banking_app.dto.AccountDto;
+import net.javapractice.banking_app.dto.TransactionDto;
 import net.javapractice.banking_app.dto.TransferDataDto;
 
 public interface AccountService {
@@ -19,4 +20,6 @@ public interface AccountService {
     void deleteAccount(Long id);
 
     void transferFunds(TransferDataDto transferDataDto);
+
+    List<TransactionDto> getAllTransactionsForAccount(Long id);
 }
