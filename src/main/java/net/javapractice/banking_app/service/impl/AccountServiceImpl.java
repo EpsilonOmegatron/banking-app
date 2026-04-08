@@ -10,6 +10,8 @@ import net.javapractice.banking_app.entity.Account;
 import net.javapractice.banking_app.mapper.AccountMapper;
 import net.javapractice.banking_app.repository.AccountRepository;
 import net.javapractice.banking_app.service.AccountService;
+import net.javapractice.banking_app.exception.AccountException;
+import net.javapractice.banking_app.exception.MathException;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -30,14 +32,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountDto getAccount(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account does not exist."));
+                .orElseThrow(() -> new AccountException("Account does not exist."));
         return AccountMapper.mapToAccountDto(account);
     }
 
     @Override
     public AccountDto deposit(Long id, Double amount) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account does not exist."));
+                .orElseThrow(() -> new AccountException("Account does not exist."));
         account.setBalance(account.getBalance() + amount);
         Account affectedAccount = accountRepository.save(account);
         return AccountMapper.mapToAccountDto(affectedAccount);
@@ -46,10 +48,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountDto withdraw(Long id, Double amount) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account does not exist."));
+                .orElseThrow(() -> new AccountException("Account does not exist."));
 
         if (account.getBalance() < amount) {
-            throw new RuntimeException("Insufficient Balance.");
+            throw new MathException("Insufficient Balance.");
         }
 
         account.setBalance(account.getBalance() - amount);
@@ -65,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deleteAccount(Long id) {
-        accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account does not exist."));
+        accountRepository.findById(id).orElseThrow(() -> new AccountException("Account does not exist."));
         accountRepository.deleteById(id);
     }
 
